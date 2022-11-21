@@ -7,11 +7,11 @@ public class Builder {
     private Menu rootMenu;
 
     public Menu getRootMenu() {
-        return this.rootMenu;
+        return rootMenu;
     }
 
     public void buildMenu(String name, List<MenuItem> menuItems) {
-        this.rootMenu = new Menu(name, menuItems);
+        rootMenu = new Menu(name, menuItems);
     }
 
 }

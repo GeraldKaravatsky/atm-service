@@ -1,6 +1,6 @@
 package com.senla.courses.atm.service.util.txt.manager;
 
-import com.senla.courses.atm.service.util.exception.TxtFileReaderException;
+import com.senla.courses.atm.service.exception.TxtFileReaderException;
 
 import java.io.IOException;
 import java.nio.file.Files;

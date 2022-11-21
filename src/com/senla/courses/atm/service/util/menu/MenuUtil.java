@@ -1,6 +1,6 @@
 package com.senla.courses.atm.service.util.menu;
 
-import com.senla.courses.atm.service.util.exception.MenuException;
+import com.senla.courses.atm.service.exception.MenuException;
 
 import java.util.Scanner;
 

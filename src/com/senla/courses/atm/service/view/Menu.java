@@ -14,11 +14,15 @@ public class Menu {
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public List<MenuItem> getMenuItems() {
-        return this.menuItems;
+        return menuItems;
+    }
+
+    public int getMenuItemsSize() {
+        return menuItems.size();
     }
 
     public void setMenuItems(List<MenuItem> menuItems) {

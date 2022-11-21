@@ -1,6 +1,6 @@
 package com.senla.courses.atm.service.util.txt.manager;
 
-import com.senla.courses.atm.service.util.exception.TxtFileWriterException;
+import com.senla.courses.atm.service.exception.TxtFileWriterException;
 
 import java.io.IOException;
 import java.nio.file.Files;

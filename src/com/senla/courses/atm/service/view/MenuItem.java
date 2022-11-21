@@ -16,12 +16,16 @@ public class MenuItem {
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void doAction() {
-        action.execute();
-        System.out.println(COMPLETED_OPERATION_MESSAGE + "\n");
+        try {
+            action.execute();
+            System.out.println(COMPLETED_OPERATION_MESSAGE + "\n");
+        } catch (Exception e) {
+            System.out.printf("ERROR. Message: %s. Cause: %s%n", e.getMessage(), e.getCause());
+        }
     }
 
 }

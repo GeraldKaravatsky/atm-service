@@ -10,7 +10,7 @@ public class AtmDaoImpl implements AtmDao {
 
     private static AtmDao instance;
 
-    public AtmDaoImpl() {
+    private AtmDaoImpl() {
         dataBase = DataBase.getInstance();
     }
 

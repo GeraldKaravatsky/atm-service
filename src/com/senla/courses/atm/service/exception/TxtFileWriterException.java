@@ -1,4 +1,4 @@
-package com.senla.courses.atm.service.util.exception;
+package com.senla.courses.atm.service.exception;
 
 public class TxtFileWriterException extends RuntimeException {
 

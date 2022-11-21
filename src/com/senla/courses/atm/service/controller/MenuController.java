@@ -1,5 +1,6 @@
 package com.senla.courses.atm.service.controller;
 
+import com.senla.courses.atm.service.service.ClientSession;
 import com.senla.courses.atm.service.util.menu.MenuUtil;
 import com.senla.courses.atm.service.view.Builder;
 import com.senla.courses.atm.service.view.MenuItem;

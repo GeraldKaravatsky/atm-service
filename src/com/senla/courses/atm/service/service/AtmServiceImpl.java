@@ -1,22 +1,15 @@
 package com.senla.courses.atm.service.service;
 
 import com.senla.courses.atm.service.dao.*;
-import com.senla.courses.atm.service.exception.*;
+import com.senla.courses.atm.service.exception.BusinessException;
+import com.senla.courses.atm.service.exception.ExceptionConstants;
 import com.senla.courses.atm.service.model.Account;
-import com.senla.courses.atm.service.model.Card;
-import com.senla.courses.atm.service.model.CardStatus;
-import com.senla.courses.atm.service.model.Client;
-import com.senla.courses.atm.service.view.actions.ClientSession;
 
-import java.time.LocalDateTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.math.BigDecimal;
 
 public class AtmServiceImpl implements AtmService {
 
-    private static final String CARD_NUMBER_PATTERN = "\\d{4}-\\d{4}-\\d{4}-\\d{4}";
-
-    private static final int DEFAULT_ATTEMPTS_NUMBER = 3;
+    private static final BigDecimal MAX_REPLENISHMENT_AMOUNT = new BigDecimal("1000000");
 
     private static AtmService instance;
 
@@ -26,12 +19,15 @@ public class AtmServiceImpl implements AtmService {
 
     private final AccountDao accountDao;
 
+    private final AtmDao atmDao;
+
     private final ClientSession clientSession;
 
     private AtmServiceImpl() {
         cardDao = CardDaoImpl.getInstance();
         clientDao = ClientDaoImpl.getInstance();
         accountDao = AccountDaoImpl.getInstance();
+        atmDao = AtmDaoImpl.getInstance();
         clientSession = ClientSession.getInstance();
     }
 
@@ -44,21 +40,6 @@ public class AtmServiceImpl implements AtmService {
     }
 
     @Override
-    public void authorize(String cardNumber, String pinCode) {
-        checkCardNumber(cardNumber);
-
-        Card card = cardDao.getByCardNumber(cardNumber);
-
-        checkClientStatus(card);
-        checkPinCode(card, pinCode);
-
-        Client client = clientDao.getByClientId(card.getClientId());
-        clientSession.setAuthorized(true);
-        clientSession.setClient(client);
-        clientSession.setCard(card);
-    }
-
-    @Override
     public String checkBalance() {
         checkAuthorization();
 
@@ -67,46 +48,47 @@ public class AtmServiceImpl implements AtmService {
         return account.getBalance();
     }
 
-    private void checkCardNumber(String cardNumber) {
-        Pattern pattern = Pattern.compile(CARD_NUMBER_PATTERN);
-        Matcher matcher = pattern.matcher(cardNumber);
-        if (!matcher.find()) {
-            throw new IncorrectCardNumberException();
+    @Override
+    public void withdrawMoney(String money) {
+        checkAuthorization();
+
+        BigDecimal bigDecimalMoney = parseBigDecimal(money);
+        Account account = accountDao.getByAccountId(clientSession.getCard().getAccountId());
+
+        if (atmDao.getLimit().compareTo(bigDecimalMoney) < 0 || account.getAmount().compareTo(bigDecimalMoney) < 0) {
+            throw new BusinessException(ExceptionConstants.NO_MONEY_ERROR_MESSAGE);
         }
+
+        account.setAmount(account.getAmount().subtract(bigDecimalMoney));
+        accountDao.update(account);
     }
 
-    private void checkClientStatus(Card card) {
-        if (CardStatus.BLOCKED.equals(card.getStatus())) {
-            if (LocalDateTime.now().isAfter(card.getBlockDate().plusDays(1))) {
-                card.setStatus(CardStatus.ACTIVE);
-                card.setAttemptsCount(DEFAULT_ATTEMPTS_NUMBER);
-                card.setBlockDate(null);
-                cardDao.update(card);
-                return;
-            }
+    @Override
+    public void replenishBalance(String money) {
+        checkAuthorization();
 
-            throw new CardBlockedException();
+        BigDecimal bigDecimalMoney = parseBigDecimal(money);
+
+        if (MAX_REPLENISHMENT_AMOUNT.compareTo(bigDecimalMoney) < 0) {
+            throw new BusinessException(ExceptionConstants.REPLENISHMENT_AMOUNT_ERROR);
         }
+
+        Account account = accountDao.getByAccountId(clientSession.getCard().getAccountId());
+        account.setAmount(account.getAmount().add(bigDecimalMoney));
+        accountDao.update(account);
     }
 
-    private void checkPinCode(Card card, String pinCode) {
-        if (!card.getPinCode().equals(pinCode)) {
-            if (card.getAttemptsCount() <= 0) {
-                card.setStatus(CardStatus.BLOCKED);
-                card.setBlockDate(LocalDateTime.now());
-                cardDao.update(card);
-                throw new AttemptsExceededException();
-            }
-
-            card.setAttemptsCount(card.getAttemptsCount() - 1);
-            cardDao.update(card);
-            throw new IncorrectPinCodeException();
+    private BigDecimal parseBigDecimal(String value) {
+        try {
+            return new BigDecimal(value);
+        } catch (NumberFormatException e) {
+            throw new BusinessException(ExceptionConstants.INCORRECT_VALUE);
         }
     }
 
     private void checkAuthorization() {
         if (!clientSession.isAuthorized()) {
-            throw new AuthorizationException();
+            throw new BusinessException(ExceptionConstants.AUTHORIZATION_ERROR_MESSAGE);
         }
     }
 

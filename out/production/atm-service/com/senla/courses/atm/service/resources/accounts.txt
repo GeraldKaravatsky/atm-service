@@ -1,2 +1,2 @@
-fields
+accountId clientId number currency amount
 1 1 123456789 BYN 999999.99

@@ -6,6 +6,6 @@ public interface CardDao {
 
     Card getByCardNumber(String cardNumber);
 
-    void update(Card card);
+    void update(Card updatedCard);
 
 }

@@ -15,7 +15,9 @@ public class DataBase {
 
     private static DataBase instance;
 
-    private static final String RESOURCES_PATH = System.getProperty("user.dir") + "/src/com/senla/courses/atm/service/resources/";
+    private static final String RESOURCES_PATH = System.getProperty("user.dir").endsWith("\\src")
+            ? System.getProperty("user.dir") + "/com/senla/courses/atm/service/resources/"
+            : System.getProperty("user.dir") + "/src/com/senla/courses/atm/service/resources/";
 
     private static final String ACCOUNTS_PATH = RESOURCES_PATH + "accounts.txt";
 

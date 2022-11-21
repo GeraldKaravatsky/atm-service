@@ -26,6 +26,14 @@ public class Account {
         return accountId;
     }
 
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     public String getBalance() {
         return amount + " " + currency;
     }

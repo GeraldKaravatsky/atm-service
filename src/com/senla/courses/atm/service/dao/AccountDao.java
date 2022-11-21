@@ -6,4 +6,6 @@ public interface AccountDao {
 
     Account getByAccountId(Long accountId);
 
+    void update(Account updatedAccount);
+
 }

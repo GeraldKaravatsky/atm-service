@@ -1,2 +1,0 @@
-id name surname patronymic
-1 IVAN TESTOV TESTOVICH

@@ -22,7 +22,7 @@ public class Navigator {
         List<MenuItem> menuItems = currentMenu.getMenuItems();
 
         for (int i = 0; i< menuItems.size(); i++) {
-            menuSb.append(i).append(". ").append(menuItems.get(i).getTitle()).append("\n");
+            menuSb.append(i + 1).append(". ").append(menuItems.get(i).getTitle()).append("\n");
         }
 
         System.out.println(menuSb);

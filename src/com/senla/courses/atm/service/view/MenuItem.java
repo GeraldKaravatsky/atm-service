@@ -1,5 +1,7 @@
 package com.senla.courses.atm.service.view;
 
+import com.senla.courses.atm.service.view.actions.Action;
+
 public class MenuItem {
 
     private static final String COMPLETED_OPERATION_MESSAGE = "OPERATION COMPLETED SUCCESSFUL";
@@ -8,14 +10,13 @@ public class MenuItem {
 
     private Action action;
 
-    private Menu nextMenu;
+    public MenuItem(String title, Action action) {
+        this.title = title;
+        this.action = action;
+    }
 
     public String getTitle() {
         return this.title;
-    }
-
-    public void setNextMenu(Menu nextMenu) {
-        this.nextMenu = nextMenu;
     }
 
     public void doAction() {

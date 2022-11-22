@@ -1,5 +1,5 @@
 *.iml
 /.idea/
-*/build/*
+/build/
 sources.txt
 /out/
